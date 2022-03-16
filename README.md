@@ -14,12 +14,12 @@ Make sure you have java compiler on your local machine
 
 ```
 javac Server.java
-java Server.java
+java Server.java  //This will run the server
 ```
 
 
 
 ```
 javac Client.java 
-java Client.java
+java Client.java //This will run the client
 ```
