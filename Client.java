@@ -27,6 +27,7 @@ public class Client {
                     System.out.println("Server Response: " + reader.readLine());
 
                     if (message.equalsIgnoreCase("exit")) {
+                        System.out.println("Breaking Inner loop on client side");
                         break;
                     }
 
@@ -35,9 +36,13 @@ public class Client {
                 clientSocket.close();
                 reader.close();
                 writer.close();
+
+                System.exit(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            System.exit(0);
         }
     }
 

@@ -15,12 +15,14 @@ public class Server {
         InputStreamReader input;
         OutputStreamWriter output;
 
-        System.out.println("Please input the port number");
+        System.out.print("Please input the port number: ");
         int port = Integer.parseInt(System.console().readLine());
 
         try {
+
+            serverSocket = new ServerSocket(port);
             while (true) {
-                serverSocket = new ServerSocket(port);
+
                 clientSocket = serverSocket.accept();
 
                 input = new InputStreamReader(clientSocket.getInputStream());
@@ -30,17 +32,17 @@ public class Server {
                 writer = new PrintWriter(output);
 
                 while (true) {
-                    String line = reader.readLine();
+                    String messageFromClient = reader.readLine();
 
-                    System.out.println("Client: " + line);
+                    System.out.println("Client: " + messageFromClient);
 
                     writer.write("Message received\n");
                     writer.flush();
 
-                    if (line.equalsIgnoreCase("exit")) {
+                    if (messageFromClient.equalsIgnoreCase("exit")) {
+                        System.out.println("Server shutting down");
                         break;
                     }
-
                 }
 
                 clientSocket.close();
@@ -48,9 +50,13 @@ public class Server {
                 output.close();
                 reader.close();
                 writer.close();
+
+                System.exit(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            System.exit(0);
         }
 
     }
