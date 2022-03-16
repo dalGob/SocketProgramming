@@ -12,9 +12,14 @@ Make sure you have java compiler on your local machine
 
 *Execute the commands on two different terminals*
 
-`javac Server.java`
-`java Server.java` => This will run the Server
+```
+javac Server.java
+java Server.java
+```
 
 
-`javac Client.java`
-`java Client.java` => This will run the Client
+
+```
+javac Client.java 
+java Client.java
+```
