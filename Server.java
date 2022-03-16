@@ -1,46 +1,57 @@
 import java.io.BufferedReader;
 import java.net.ServerSocket;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.io.PrintWriter;
 
 public class Server {
 
-    private Socket clientSocket;
-    private ServerSocket serverSocket;
-    private BufferedReader reader;
-    private PrintWriter writer;
+    public static void main(String[] args) {
+        Socket clientSocket;
+        ServerSocket serverSocket;
+        BufferedReader reader;
+        PrintWriter writer;
+        InputStreamReader input;
+        OutputStreamWriter output;
 
-    public Server(int port) {
-        try {
-            serverSocket = new ServerSocket(port);
-            clientSocket = serverSocket.accept();
-            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            writer = new PrintWriter(clientSocket.getOutputStream(), true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void listen() {
+        System.out.println("Please input the port number");
+        int port = Integer.parseInt(System.console().readLine());
 
         try {
-            System.out.println("Server is listening on port: " + serverSocket.getLocalPort());
-            String line = reader.readLine();
+            while (true) {
+                serverSocket = new ServerSocket(port);
+                clientSocket = serverSocket.accept();
 
-            while (line != null) {
-                System.out.println(line);
+                input = new InputStreamReader(clientSocket.getInputStream());
+                output = new OutputStreamWriter(clientSocket.getOutputStream());
 
+                reader = new BufferedReader(input);
+                writer = new PrintWriter(output);
+
+                while (true) {
+                    String line = reader.readLine();
+
+                    System.out.println("Client: " + line);
+
+                    writer.write("Message received\n");
+                    writer.flush();
+
+                    if (line.equalsIgnoreCase("exit")) {
+                        break;
+                    }
+
+                }
+
+                clientSocket.close();
+                input.close();
+                output.close();
+                reader.close();
+                writer.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    public static void main(String[] args) {
-        System.out.println("Please input the port number");
-        int port = Integer.parseInt(System.console().readLine());
-        Server server = new Server(port);
-        server.listen();
     }
 }
