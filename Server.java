@@ -1,63 +1,79 @@
-import java.io.BufferedReader;
+import java.io.*;
 import java.net.ServerSocket;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class Server {
 
-    public static void main(String[] args) {
-        Socket clientSocket;
-        ServerSocket serverSocket;
-        BufferedReader reader;
-        PrintWriter writer;
-        InputStreamReader input;
-        OutputStreamWriter output;
+    private static final Scanner keyboard = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        Socket clientSocket = null;
+        ServerSocket serverSocket = null;
+        BufferedReader reader = null;
+        PrintWriter writer = null;
 
         System.out.print("Please input the port number: ");
-        int port = Integer.parseInt(System.console().readLine());
+        int port = keyboard.nextInt();
 
         try {
-
             serverSocket = new ServerSocket(port);
-            while (true) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        System.out.println("Listening");
+
+        String[] choices = {"Silence", "Betray"};
+
+        while (true) {
+            try {
                 clientSocket = serverSocket.accept();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-                input = new InputStreamReader(clientSocket.getInputStream());
-                output = new OutputStreamWriter(clientSocket.getOutputStream());
+            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
-                reader = new BufferedReader(input);
-                writer = new PrintWriter(output);
+            while (true) {
+                int number = (int)(Math.random() * 2);
 
-                while (true) {
-                    String messageFromClient = reader.readLine();
+                String msgFromClient = reader.readLine();
+                System.out.println("Client: " + msgFromClient);
+                System.out.println("Server: " + choices[number]);
+                String msgFromServer;
 
-                    System.out.println("Client: " + messageFromClient);
-
-                    writer.write("Message received\n");
-                    writer.flush();
-
-                    if (messageFromClient.equalsIgnoreCase("exit")) {
-                        System.out.println("Server shutting down");
-                        break;
+                if(choices[number].equals("Silence")) {
+                    if(msgFromClient.equals("Silence")) {
+                        msgFromServer = "Prisoner B's choice: Silence, Prisoner A's sentence: 1 year in prison, Prisoner B's sentence: " +
+                                "1 year in prison";
+                    } else {
+                        msgFromServer = "Prisoner B's choice: Silence, Prisoner A's sentence: Freedom, Prisoner B's sentence: " +
+                                "3 year in prison";
+                    }
+                } else {
+                    if (msgFromClient.equals("Silence")) {
+                        msgFromServer = "Prisoner B's choice: Betray, Prisoner A's sentence: 3 year in prison, Prisoner B's sentence: " +
+                                "Freedom";
+                    } else {
+                        msgFromServer = "Prisoner B's choice: Betray, Prisoner A's sentence: 2 year in prison, Prisoner B's sentence: " +
+                                "2 year in prison";
                     }
                 }
 
-                clientSocket.close();
-                input.close();
-                output.close();
-                reader.close();
-                writer.close();
+                System.out.println("Outcome: " + msgFromServer);
+                writer.println(msgFromServer);
+                writer.flush();
 
-                System.exit(0);
+                if(msgFromClient.equalsIgnoreCase("quit")) {
+                    break;
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            System.exit(0);
-        }
 
+            clientSocket.close();
+            reader.close();
+            writer.close();
+        }
     }
 }
