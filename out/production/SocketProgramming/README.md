@@ -4,8 +4,8 @@ Assignment 3 For CSCI 3171 - Network Programming
 
 ### Group Members
 <ul> 
-<li> Gobind Singh - Server Code and Game Logic     
-<li> Parth Patel - Client Code
+<li> Gobind Singh - Main Game Logic     
+<li> Parth Patel - BoilerPlate Code
 </ul>
 
 ### Steps to execute the program 
